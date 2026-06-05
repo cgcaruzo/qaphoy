@@ -3,16 +3,17 @@
 import { useState, useEffect, useCallback } from "react";
 import { DisponibilidadCard } from "@/components/DisponibilidadCard";
 import { FiltrosBanda } from "@/components/FiltrosBanda";
-import { Formulario } from "@/components/Formulario";
-import { QuickPublish } from "@/components/QuickPublish";
+import { FormularioFull } from "@/components/FormularioFull";
+import { QuickFull } from "@/components/QuickFull";
 import type { Disponibilidad, Estado } from "@/types";
+
+type PageState = "list" | "quick" | "form";
 
 export function DisponibilidadesList() {
   const [disponibilidades, setDisponibilidades] = useState<Disponibilidad[]>([]);
   const [loading, setLoading] = useState(true);
   const [filtro, setFiltro] = useState("Todas");
-  const [showForm, setShowForm] = useState(false);
-  const [showQuick, setShowQuick] = useState(false);
+  const [pageState, setPageState] = useState<PageState>("list");
 
   const fetchDisponibilidades = useCallback(async () => {
     try {
@@ -57,6 +58,24 @@ export function DisponibilidadesList() {
     fetchDisponibilidades();
   };
 
+  if (pageState === "quick") {
+    return (
+      <QuickFull
+        onClose={() => setPageState("list")}
+        onPublish={handleCreate}
+      />
+    );
+  }
+
+  if (pageState === "form") {
+    return (
+      <FormularioFull
+        onClose={() => setPageState("list")}
+        onSubmit={handleCreate}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen pb-24">
       <header className="bg-primary text-white px-4 py-6">
@@ -66,7 +85,7 @@ export function DisponibilidadesList() {
 
       <main className="px-4 py-4 space-y-4">
         <button
-          onClick={() => setShowQuick(true)}
+          onClick={() => setPageState("quick")}
           className="w-full py-4 bg-primary hover:bg-primary-hover text-white font-semibold rounded-2xl text-lg shadow-lg shadow-primary/25 flex items-center justify-center gap-3 transition-all active:scale-[0.98]"
         >
           <svg
@@ -90,10 +109,7 @@ export function DisponibilidadesList() {
         {loading ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="h-32 bg-slate-100 rounded-xl animate-pulse"
-              />
+              <div key={i} className="h-32 bg-slate-100 rounded-xl animate-pulse" />
             ))}
           </div>
         ) : disponibilidades.length === 0 ? (
@@ -112,41 +128,24 @@ export function DisponibilidadesList() {
               />
             </svg>
             <p>No hay estaciones activas</p>
-            <p className="text-sm mt-1">
-              ¡Sé el primero en publicar!
-            </p>
+            <p className="text-sm mt-1">¡Sé el primero en publicar!</p>
           </div>
         ) : (
           <div className="space-y-3">
             {disponibilidades.map((d) => (
-              <DisponibilidadCard
-                key={d.id}
-                disponibilidad={d}
-              />
+              <DisponibilidadCard key={d.id} disponibilidad={d} />
             ))}
           </div>
         )}
       </main>
 
       <button
-        onClick={() => setShowForm(true)}
+        onClick={() => setPageState("form")}
         className="fixed bottom-6 right-6 w-14 h-14 bg-success text-white rounded-full shadow-lg shadow-success/30 flex items-center justify-center text-2xl font-bold transition-transform active:scale-95"
         aria-label="Publicar disponibilidad"
       >
         +
       </button>
-
-      <QuickPublish
-        isOpen={showQuick}
-        onClose={() => setShowQuick(false)}
-        onPublish={handleCreate}
-      />
-
-      <Formulario
-        isOpen={showForm}
-        onClose={() => setShowForm(false)}
-        onSubmit={handleCreate}
-      />
     </div>
   );
 }
