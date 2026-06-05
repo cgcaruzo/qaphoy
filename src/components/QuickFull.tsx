@@ -135,7 +135,7 @@ export function QuickFull({ onClose, onPublish }: QuickFullProps) {
         ) : (
           <div className="space-y-4">
             <p className="text-text-muted">Ingresá la frecuencia:</p>
-            <div className="flex gap-2 items-center">
+            <div className="flex gap-2 items-center overflow-visible">
               <input
                 type="text"
                 value={numeroFrecuencia}
@@ -147,7 +147,7 @@ export function QuickFull({ onClose, onPublish }: QuickFullProps) {
               <select
                 value={unidad}
                 onChange={(e) => setUnidad(e.target.value as UnidadFrecuencia)}
-                className="px-4 py-4 border border-border rounded-xl bg-card text-xl font-mono"
+                className="w-20 px-2 py-4 border border-border rounded-xl bg-card text-xl font-mono text-center"
               >
                 {UNIDADES_FRECUENCIA.map((u) => (
                   <option key={u} value={u}>{u}</option>

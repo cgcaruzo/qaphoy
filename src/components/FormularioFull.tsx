@@ -131,7 +131,7 @@ export function FormularioFull({ onClose, onSubmit }: FormularioFullProps) {
 
           <div>
             <label className="block text-sm font-medium mb-1">Frecuencia *</label>
-            <div className="flex gap-2 items-center">
+            <div className="flex gap-2 items-center overflow-visible">
               <input
                 type="text"
                 value={numeroFrecuencia}
@@ -143,7 +143,7 @@ export function FormularioFull({ onClose, onSubmit }: FormularioFullProps) {
               <select
                 value={unidad}
                 onChange={(e) => setUnidad(e.target.value as UnidadFrecuencia)}
-                className="px-4 py-3 border border-border rounded-xl bg-card text-lg font-mono"
+                className="w-20 px-2 py-3 border border-border rounded-xl bg-card text-lg font-mono text-center"
               >
                 {UNIDADES_FRECUENCIA.map((u) => (
                   <option key={u} value={u}>{u}</option>

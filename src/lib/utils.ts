@@ -69,6 +69,10 @@ export function esVigente(horaDesde: string, horaHasta: string): boolean {
   const desde = h1 * 60 + m1;
   const hasta = h2 * 60 + m2;
 
+  if (hasta < desde) {
+    return horaActual >= desde || horaActual <= hasta;
+  }
+
   return horaActual >= desde && horaActual <= hasta;
 }
 
