@@ -24,8 +24,8 @@ export function Formulario({ onSubmit, onClose }: FormularioProps) {
   const [numeroFrecuencia, setNumeroFrecuencia] = useState("");
   const [unidad, setUnidad] = useState<UnidadFrecuencia>("MHz");
   const [estado, setEstado] = useState<Estado>("QAP");
-  const [horaDesde, setHoraDesde] = useState("");
-  const [horaHasta, setHoraHasta] = useState("");
+  const [horaDesde, setHoraDesde] = useState("09:00");
+  const [horaHasta, setHoraHasta] = useState("11:00");
   const [observaciones, setObservaciones] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {

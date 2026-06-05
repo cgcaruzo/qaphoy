@@ -59,6 +59,19 @@ export function formatHora(hora: string): string {
   return hora.substring(0, 5);
 }
 
+export function esVigente(horaDesde: string, horaHasta: string): boolean {
+  const ahora = new Date();
+  const horaActual = ahora.getHours() * 60 + ahora.getMinutes();
+
+  const [h1, m1] = horaDesde.split(":").map(Number);
+  const [h2, m2] = horaHasta.split(":").map(Number);
+
+  const desde = h1 * 60 + m1;
+  const hasta = h2 * 60 + m2;
+
+  return horaActual >= desde && horaActual <= hasta;
+}
+
 export const ESTADOS: Estado[] = [
   "QAP",
   "A la escucha",

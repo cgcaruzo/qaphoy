@@ -57,15 +57,6 @@ export function DisponibilidadesList() {
     fetchDisponibilidades();
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("¿Eliminar esta disponibilidad?")) return;
-    const res = await fetch(`/api/disponibilidades/${id}`, {
-      method: "DELETE",
-    });
-    if (!res.ok) throw new Error("Error al eliminar");
-    fetchDisponibilidades();
-  };
-
   return (
     <div className="min-h-screen pb-24">
       <header className="bg-primary text-white px-4 py-6">
@@ -117,7 +108,6 @@ export function DisponibilidadesList() {
               <DisponibilidadCard
                 key={d.id}
                 disponibilidad={d}
-                onDelete={handleDelete}
               />
             ))}
           </div>

@@ -24,7 +24,7 @@ export async function getActivas(banda?: string): Promise<Disponibilidad[]> {
     params.push(banda);
   }
 
-  sql += " ORDER BY fecha_creacion DESC, hora_desde ASC";
+  sql += " ORDER BY hora_desde ASC, fecha_creacion DESC";
 
   return query<Disponibilidad>(sql, params);
 }
