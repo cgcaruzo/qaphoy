@@ -1,0 +1,72 @@
+import type { Banda, Estado, UnidadFrecuencia } from "@/types";
+
+export function validarFrecuencia(frecuencia: string): boolean {
+  const regex = /^\d+\.\d+\s+(kHz|MHz|GHz)$/i;
+  return regex.test(frecuencia.trim());
+}
+
+export function validarNumeroFrecuencia(numero: string): boolean {
+  const regex = /^\d+\.?\d*$/;
+  return regex.test(numero.trim()) && numero.trim().length > 0;
+}
+
+export function calcularBanda(frecuencia: string): Banda {
+  const match = frecuencia.match(/(\d+\.?\d*)\s*(kHz|MHz|GHz)/i);
+  if (!match) return "HF";
+
+  const valor = parseFloat(match[1]);
+  const unidad = match[2].toLowerCase();
+
+  let mhz = valor;
+  if (unidad === "khz") mhz = valor / 1000;
+  else if (unidad === "ghz") mhz = valor * 1000;
+
+  if (mhz >= 3 && mhz <= 30) return "HF";
+  if (mhz >= 30 && mhz <= 300) return "VHF";
+  return "UHF";
+}
+
+export function formatoTiempoRelativo(fecha: string): string {
+  const ahora = new Date();
+  const creado = new Date(fecha);
+  const diffMs = ahora.getTime() - creado.getTime();
+  const diffMin = Math.floor(diffMs / 60000);
+
+  if (diffMin < 1) return "ahora";
+  if (diffMin < 60) return `hace ${diffMin} min`;
+
+  const diffHoras = Math.floor(diffMin / 60);
+  if (diffHoras < 24) {
+    return `hace ${diffHoras} ${diffHoras === 1 ? "hora" : "horas"}`;
+  }
+
+  const diffDias = Math.floor(diffHoras / 24);
+  return `hace ${diffDias} ${diffDias === 1 ? "día" : "días"}`;
+}
+
+export function colorActividad(fecha: string): "success" | "warning" | "muted" {
+  const ahora = new Date();
+  const creado = new Date(fecha);
+  const diffMs = ahora.getTime() - creado.getTime();
+  const diffMin = Math.floor(diffMs / 60000);
+
+  if (diffMin < 30) return "success";
+  if (diffMin < 120) return "warning";
+  return "muted";
+}
+
+export function formatHora(hora: string): string {
+  return hora.substring(0, 5);
+}
+
+export const ESTADOS: Estado[] = [
+  "QAP",
+  "A la escucha",
+  "Monitoreando",
+  "Móvil",
+  "Base",
+];
+
+export const BANDAS: string[] = ["Todas", "HF", "VHF", "UHF"];
+
+export const UNIDADES_FRECUENCIA: UnidadFrecuencia[] = ["kHz", "MHz", "GHz"];
