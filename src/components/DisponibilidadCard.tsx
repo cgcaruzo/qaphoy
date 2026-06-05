@@ -71,7 +71,7 @@ export function DisponibilidadCard({ disponibilidad }: DisponibilidadCardProps) 
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d="M9.59 4.59A2 2 0 1111 8H2m10.59 11.41A2 2 0 1014 16H2m15.73-8.27A2.5 2.5 0 1119.5 12H2"
+              d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"
             />
           </svg>
           <span className="font-mono">{frecuencia}</span>
