@@ -2,10 +2,14 @@ import { query, queryOne, execute } from "../db";
 import type { Disponibilidad, CreateDisponibilidadInput } from "@/types";
 
 export async function getActivas(banda?: string): Promise<Disponibilidad[]> {
+  const ahora = new Date();
+  const horaActual = `${ahora.getHours().toString().padStart(2, "0")}:${ahora.getMinutes().toString().padStart(2, "0")}`;
+  
   let sql = `
     SELECT 
       id,
       indicativo,
+      numero_operador,
       frecuencia,
       banda,
       estado,
@@ -24,7 +28,7 @@ export async function getActivas(banda?: string): Promise<Disponibilidad[]> {
     params.push(banda);
   }
 
-  sql += " ORDER BY hora_desde ASC, fecha_creacion DESC";
+  sql += ` ORDER BY CASE WHEN (hora_hasta > hora_desde AND '${horaActual}' >= hora_desde AND '${horaActual}' <= hora_hasta) OR (hora_hasta < hora_desde AND ('${horaActual}' >= hora_desde OR '${horaActual}' <= hora_hasta)) THEN 0 ELSE 1 END, fecha_expiracion ASC`;
 
   return query<Disponibilidad>(sql, params);
 }
@@ -39,21 +43,28 @@ export async function getById(id: string): Promise<Disponibilidad | null> {
 export async function create(data: CreateDisponibilidadInput): Promise<Disponibilidad> {
   const sql = `
     INSERT INTO disponibilidades (
-      indicativo, frecuencia, banda, estado, 
-      hora_desde, hora_hasta, observaciones
+      indicativo, numero_operador, frecuencia, banda, estado, 
+      hora_desde, hora_hasta, observaciones, fecha_expiracion
     )
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
     RETURNING *
   `;
   const banda = calcularBanda(data.frecuencia);
+  const ahora = new Date();
+  const [hDesde] = data.hora_desde.split(":").map(Number);
+  const [hHasta] = data.hora_hasta.split(":").map(Number);
+  const fechaExpiracion = calcularFechaExpiracion(ahora, hDesde, hHasta);
+  const fechaExpiracionStr = fechaExpiracion.toISOString();
   const params = [
     data.indicativo.toUpperCase(),
+    data.numero_operador || null,
     data.frecuencia,
     banda,
     data.estado,
     data.hora_desde,
     data.hora_hasta,
     data.observaciones || null,
+    fechaExpiracionStr,
   ];
 
   const result = await queryOne<Disponibilidad>(sql, params);
@@ -61,6 +72,17 @@ export async function create(data: CreateDisponibilidadInput): Promise<Disponibi
     throw new Error("Error al crear disponibilidad");
   }
   return result;
+}
+
+function calcularFechaExpiracion(fechaCreacion: Date, horaDesde: number, horaHasta: number): Date {
+  const expiracion = new Date(fechaCreacion);
+  expiracion.setHours(horaHasta, 0, 0, 0);
+  
+  if (horaHasta < horaDesde) {
+    expiracion.setDate(expiracion.getDate() + 1);
+  }
+  
+  return expiracion;
 }
 
 export async function remove(id: string): Promise<boolean> {
