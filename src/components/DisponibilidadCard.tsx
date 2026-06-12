@@ -10,6 +10,7 @@ interface DisponibilidadCardProps {
 export function DisponibilidadCard({ disponibilidad }: DisponibilidadCardProps) {
   const {
     indicativo,
+    numero_operador,
     frecuencia,
     banda,
     estado,
@@ -45,6 +46,9 @@ export function DisponibilidadCard({ disponibilidad }: DisponibilidadCardProps) 
         <div className="flex items-center gap-2">
           <span className="font-mono text-xl font-bold text-foreground">
             {indicativo}
+            {numero_operador && (
+              <span className="ml-1 text-base font-normal text-text-muted">#{numero_operador}</span>
+            )}
           </span>
           <span
             className={`px-2 py-0.5 text-xs font-medium rounded-full border ${

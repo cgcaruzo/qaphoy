@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { validarNumeroFrecuencia, UNIDADES_FRECUENCIA } from "@/lib/utils";
+import { validarNumeroFrecuencia, UNIDADES_FRECUENCIA, validarIndicativo } from "@/lib/utils";
 import type { Estado, UnidadFrecuencia } from "@/types";
 
 interface QuickFullProps {
   onClose: () => void;
   onPublish: (data: {
     indicativo: string;
+    numero_operador?: string;
     frecuencia: string;
     estado: Estado;
     hora_desde: string;
@@ -23,6 +24,7 @@ export function QuickFull({ onClose, onPublish }: QuickFullProps) {
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState<"indicativo" | "frecuencia">("indicativo");
   const [indicativo, setIndicativo] = useState("");
+  const [numeroOperador, setNumeroOperador] = useState("");
   const [numeroFrecuencia, setNumeroFrecuencia] = useState("");
   const [unidad, setUnidad] = useState<UnidadFrecuencia>("MHz");
   const [error, setError] = useState<string | null>(null);
@@ -65,6 +67,10 @@ export function QuickFull({ onClose, onPublish }: QuickFullProps) {
       setError("El indicativo es requerido");
       return;
     }
+    if (!validarIndicativo(indicativo.trim())) {
+      setError("Indicativo inválido. Formato: 1-2 letras, 1 dígito, 1-3 letras");
+      return;
+    }
     setStep("frecuencia");
   };
 
@@ -79,6 +85,7 @@ export function QuickFull({ onClose, onPublish }: QuickFullProps) {
     try {
       await onPublish({
         indicativo: indicativo.toUpperCase(),
+        numero_operador: numeroOperador || undefined,
         frecuencia: `${numeroFrecuencia} ${unidad}`,
         estado: "QAP",
         hora_desde: horaDesdeStr,
@@ -115,15 +122,25 @@ export function QuickFull({ onClose, onPublish }: QuickFullProps) {
         {step === "indicativo" ? (
           <div className="space-y-4">
             <p className="text-text-muted">Ingresá tu indicativo:</p>
-            <input
-              type="text"
-              value={indicativo}
-              onChange={(e) => setIndicativo(e.target.value.toUpperCase())}
-              placeholder="LU4ABC"
-              className="w-full px-4 py-4 border border-border rounded-xl bg-card text-2xl font-mono text-center uppercase"
-              maxLength={10}
-              autoFocus
-            />
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={indicativo}
+                onChange={(e) => setIndicativo(e.target.value.toUpperCase())}
+                placeholder="LU4ABC"
+                className="flex-1 min-w-0 px-4 py-4 border border-border rounded-xl bg-card text-2xl font-mono text-center uppercase"
+                maxLength={10}
+                autoFocus
+              />
+              <input
+                type="text"
+                value={numeroOperador}
+                onChange={(e) => setNumeroOperador(e.target.value.replace(/\D/g, "").slice(0, 2))}
+                placeholder="Nº Op."
+                className="w-24 px-2 py-4 border border-border rounded-xl bg-card text-xl font-mono text-center"
+                maxLength={2}
+              />
+            </div>
             {error && <p className="text-red-500 text-sm">{error}</p>}
             <button
               onClick={handleSiguiente}
@@ -141,13 +158,13 @@ export function QuickFull({ onClose, onPublish }: QuickFullProps) {
                 value={numeroFrecuencia}
                 onChange={(e) => setNumeroFrecuencia(e.target.value)}
                 placeholder="146.520"
-                className="flex-1 px-4 py-4 border border-border rounded-xl bg-card text-2xl font-mono text-center"
+                className="flex-1 min-w-0 px-4 py-4 border border-border rounded-xl bg-card text-2xl font-mono text-center"
                 autoFocus
               />
               <select
                 value={unidad}
                 onChange={(e) => setUnidad(e.target.value as UnidadFrecuencia)}
-                className="w-20 px-2 py-4 border border-border rounded-xl bg-card text-xl font-mono text-center"
+                className="w-24 px-2 py-4 border border-border rounded-xl bg-card text-xl font-mono text-center"
               >
                 {UNIDADES_FRECUENCIA.map((u) => (
                   <option key={u} value={u}>{u}</option>

@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { ESTADOS, UNIDADES_FRECUENCIA, validarNumeroFrecuencia } from "@/lib/utils";
+import { ESTADOS, UNIDADES_FRECUENCIA, validarNumeroFrecuencia, validarIndicativo } from "@/lib/utils";
 import type { Estado, UnidadFrecuencia } from "@/types";
 
 interface FormularioFullProps {
   onClose: () => void;
   onSubmit: (data: {
     indicativo: string;
+    numero_operador?: string;
     frecuencia: string;
     estado: Estado;
     hora_desde: string;
@@ -24,6 +25,7 @@ export function FormularioFull({ onClose, onSubmit }: FormularioFullProps) {
   const [error, setError] = useState<string | null>(null);
 
   const [indicativo, setIndicativo] = useState("");
+  const [numeroOperador, setNumeroOperador] = useState("");
   const [numeroFrecuencia, setNumeroFrecuencia] = useState("");
   const [unidad, setUnidad] = useState<UnidadFrecuencia>("MHz");
   const [estado, setEstado] = useState<Estado>("QAP");
@@ -67,6 +69,11 @@ export function FormularioFull({ onClose, onSubmit }: FormularioFullProps) {
       return;
     }
 
+    if (!validarIndicativo(indicativo.trim())) {
+      setError("Indicativo inválido. Formato: 1-2 letras, 1 dígito, 1-3 letras (ej: LU4ABC)");
+      return;
+    }
+
     if (!validarNumeroFrecuencia(numeroFrecuencia)) {
       setError("Formato numérico inválido. Usar punto para decimales (ej: 146.520)");
       return;
@@ -81,6 +88,7 @@ export function FormularioFull({ onClose, onSubmit }: FormularioFullProps) {
     try {
       await onSubmit({
         indicativo,
+        numero_operador: numeroOperador || undefined,
         frecuencia: `${numeroFrecuencia} ${unidad}`,
         estado,
         hora_desde: horaDesde,
@@ -117,16 +125,26 @@ export function FormularioFull({ onClose, onSubmit }: FormularioFullProps) {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-1">Indicativo *</label>
-            <input
-              type="text"
-              value={indicativo}
-              onChange={(e) => setIndicativo(e.target.value.toUpperCase())}
-              placeholder="LU4ABC"
-              className="w-full px-4 py-3 border border-border rounded-xl bg-card text-lg font-mono uppercase"
-              maxLength={10}
-              required
-              autoFocus
-            />
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={indicativo}
+                onChange={(e) => setIndicativo(e.target.value.toUpperCase())}
+                placeholder="LU4ABC"
+                className="flex-1 min-w-0 px-4 py-3 border border-border rounded-xl bg-card text-lg font-mono uppercase"
+                maxLength={10}
+                required
+                autoFocus
+              />
+              <input
+                type="text"
+                value={numeroOperador}
+                onChange={(e) => setNumeroOperador(e.target.value.replace(/\D/g, "").slice(0, 2))}
+                placeholder="Nº Op."
+                className="w-24 px-2 py-3 border border-border rounded-xl bg-card text-lg font-mono text-center"
+                maxLength={2}
+              />
+            </div>
           </div>
 
           <div>
@@ -137,13 +155,13 @@ export function FormularioFull({ onClose, onSubmit }: FormularioFullProps) {
                 value={numeroFrecuencia}
                 onChange={(e) => setNumeroFrecuencia(e.target.value)}
                 placeholder="146.520"
-                className="flex-1 px-4 py-3 border border-border rounded-xl bg-card text-lg font-mono"
+                className="flex-1 min-w-0 px-4 py-3 border border-border rounded-xl bg-card text-lg font-mono"
                 required
               />
               <select
                 value={unidad}
                 onChange={(e) => setUnidad(e.target.value as UnidadFrecuencia)}
-                className="w-20 px-2 py-3 border border-border rounded-xl bg-card text-lg font-mono text-center"
+                className="w-24 px-2 py-3 border border-border rounded-xl bg-card text-lg font-mono text-center"
               >
                 {UNIDADES_FRECUENCIA.map((u) => (
                   <option key={u} value={u}>{u}</option>

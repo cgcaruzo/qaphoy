@@ -40,6 +40,7 @@ export function DisponibilidadesList() {
 
   const handleCreate = async (data: {
     indicativo: string;
+    numero_operador?: string;
     frecuencia: string;
     estado: Estado;
     hora_desde: string;
