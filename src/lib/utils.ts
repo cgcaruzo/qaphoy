@@ -10,6 +10,11 @@ export function validarNumeroFrecuencia(numero: string): boolean {
   return regex.test(numero.trim()) && numero.trim().length > 0;
 }
 
+export function validarIndicativo(indicativo: string): boolean {
+  const regex = /^[A-Z]{1,2}\d{1}[A-Z]{1,3}$/i;
+  return regex.test(indicativo.trim());
+}
+
 export function calcularBanda(frecuencia: string): Banda {
   const match = frecuencia.match(/(\d+\.?\d*)\s*(kHz|MHz|GHz)/i);
   if (!match) return "HF";
@@ -76,12 +81,37 @@ export function esVigente(horaDesde: string, horaHasta: string): boolean {
   return horaActual >= desde && horaActual <= hasta;
 }
 
+export function esProxima(horaDesde: string): boolean {
+  const ahora = new Date();
+  const horaActual = ahora.getHours() * 60 + ahora.getMinutes();
+
+  const [h, m] = horaDesde.split(":").map(Number);
+  const desde = h * 60 + m;
+
+  const diffMinutos = desde - horaActual;
+  return diffMinutos >= 0 && diffMinutos <= 24 * 60;
+}
+
+export function minutosHastaInicio(horaDesde: string): number {
+  const ahora = new Date();
+  const horaActual = ahora.getHours() * 60 + ahora.getMinutes();
+
+  const [h, m] = horaDesde.split(":").map(Number);
+  const desde = h * 60 + m;
+
+  let diff = desde - horaActual;
+  if (diff < 0) diff += 24 * 60;
+
+  return diff;
+}
+
 export const ESTADOS: Estado[] = [
   "QAP",
   "A la escucha",
   "Monitoreando",
   "Móvil",
   "Base",
+  "CW (Morse)",
 ];
 
 export const BANDAS: string[] = ["Todas", "HF", "VHF", "UHF"];

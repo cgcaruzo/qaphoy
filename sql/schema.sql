@@ -4,6 +4,7 @@
 CREATE TABLE IF NOT EXISTS disponibilidades (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   indicativo VARCHAR(10) NOT NULL,
+  numero_operador VARCHAR(2),
   frecuencia VARCHAR(20) NOT NULL,
   banda VARCHAR(5) NOT NULL,
   estado VARCHAR(20) NOT NULL,

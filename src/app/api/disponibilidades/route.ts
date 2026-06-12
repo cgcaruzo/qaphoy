@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getActivas, create } from "@/lib/sql/queries";
-import { validarFrecuencia } from "@/lib/utils";
+import { validarFrecuencia, validarIndicativo } from "@/lib/utils";
 import type { CreateDisponibilidadInput } from "@/types";
 
 export async function GET(request: NextRequest) {
@@ -27,6 +27,16 @@ export async function POST(request: NextRequest) {
     if (!body.indicativo || typeof body.indicativo !== "string") {
       return NextResponse.json(
         { error: "Indicativo es requerido" },
+        { status: 400 }
+      );
+    }
+
+    if (!validarIndicativo(body.indicativo.trim())) {
+      return NextResponse.json(
+        {
+          error: "Indicativo inválido",
+          details: "Formato requerido: 1-2 letras, 1 dígito, 1-3 letras (ej: LU4ABC, CE3XYZ, K1A)",
+        },
         { status: 400 }
       );
     }
@@ -64,6 +74,7 @@ export async function POST(request: NextRequest) {
 
     const input: CreateDisponibilidadInput = {
       indicativo: body.indicativo.trim().toUpperCase(),
+      numero_operador: body.numero_operador?.trim() || undefined,
       frecuencia: body.frecuencia.trim(),
       estado: body.estado,
       hora_desde: body.hora_desde,

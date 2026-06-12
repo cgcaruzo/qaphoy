@@ -1,4 +1,4 @@
-export type Estado = "QAP" | "A la escucha" | "Monitoreando" | "Móvil" | "Base";
+export type Estado = "QAP" | "A la escucha" | "Monitoreando" | "Móvil" | "Base" | "CW (Morse)";
 
 export type Banda = "HF" | "VHF" | "UHF";
 
@@ -7,6 +7,7 @@ export type UnidadFrecuencia = "kHz" | "MHz" | "GHz";
 export interface Disponibilidad {
   id: string;
   indicativo: string;
+  numero_operador: string | null;
   frecuencia: string;
   banda: Banda;
   estado: Estado;
@@ -19,6 +20,7 @@ export interface Disponibilidad {
 
 export interface CreateDisponibilidadInput {
   indicativo: string;
+  numero_operador?: string;
   frecuencia: string;
   estado: Estado;
   hora_desde: string;
