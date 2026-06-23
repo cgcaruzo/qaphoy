@@ -72,18 +72,22 @@ export async function create(data: CreateDisponibilidadInput): Promise<Disponibi
 }
 
 function calcularFechaExpiracion(fechaCreacion: Date, horaDesde: number, horaHasta: number): Date {
-  const expiracion = new Date(
-    fechaCreacion.getFullYear(),
-    fechaCreacion.getMonth(),
-    fechaCreacion.getDate(),
-    horaHasta, 0, 0, 0
-  );
+  const ARG_OFFSET_MS = 3 * 60 * 60 * 1000;
+
+  const localMs = fechaCreacion.getTime() + ARG_OFFSET_MS;
+  const localDate = new Date(localMs);
+
+  const y = localDate.getUTCFullYear();
+  const m = localDate.getUTCMonth();
+  const d = localDate.getUTCDate();
+
+  let expUtcMs = Date.UTC(y, m, d, horaHasta, 0, 0, 0) - ARG_OFFSET_MS;
 
   if (horaHasta < horaDesde) {
-    expiracion.setDate(expiracion.getDate() + 1);
+    expUtcMs += 86_400_000;
   }
 
-  return expiracion;
+  return new Date(expUtcMs);
 }
 
 export async function remove(id: string): Promise<boolean> {
