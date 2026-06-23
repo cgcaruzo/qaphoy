@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS disponibilidades (
   hora_hasta TIME NOT NULL,
   observaciones TEXT,
   fecha_creacion TIMESTAMPTZ DEFAULT NOW(),
-  fecha_expiracion TIMESTAMPTZ DEFAULT NOW() + INTERVAL '24 hours'
+  fecha_expiracion TIMESTAMPTZ
 );
 
 CREATE INDEX IF NOT EXISTS idx_disponibilidades_fecha_expiracion 
