@@ -2,9 +2,6 @@ import { query, queryOne, execute } from "../db";
 import type { Disponibilidad, CreateDisponibilidadInput } from "@/types";
 
 export async function getActivas(banda?: string): Promise<Disponibilidad[]> {
-  const ahora = new Date();
-  const horaActual = `${ahora.getHours().toString().padStart(2, "0")}:${ahora.getMinutes().toString().padStart(2, "0")}`;
-  
   let sql = `
     SELECT 
       id,
@@ -28,7 +25,7 @@ export async function getActivas(banda?: string): Promise<Disponibilidad[]> {
     params.push(banda);
   }
 
-  sql += ` ORDER BY CASE WHEN (hora_hasta > hora_desde AND '${horaActual}' >= hora_desde AND '${horaActual}' <= hora_hasta) OR (hora_hasta < hora_desde AND ('${horaActual}' >= hora_desde OR '${horaActual}' <= hora_hasta)) THEN 0 ELSE 1 END, fecha_expiracion ASC`;
+  sql += " ORDER BY fecha_expiracion ASC";
 
   return query<Disponibilidad>(sql, params);
 }
@@ -75,13 +72,17 @@ export async function create(data: CreateDisponibilidadInput): Promise<Disponibi
 }
 
 function calcularFechaExpiracion(fechaCreacion: Date, horaDesde: number, horaHasta: number): Date {
-  const expiracion = new Date(fechaCreacion);
-  expiracion.setHours(horaHasta, 0, 0, 0);
-  
+  const expiracion = new Date(
+    fechaCreacion.getFullYear(),
+    fechaCreacion.getMonth(),
+    fechaCreacion.getDate(),
+    horaHasta, 0, 0, 0
+  );
+
   if (horaHasta < horaDesde) {
     expiracion.setDate(expiracion.getDate() + 1);
   }
-  
+
   return expiracion;
 }
 
