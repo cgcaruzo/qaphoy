@@ -48,9 +48,9 @@ export async function create(data: CreateDisponibilidadInput): Promise<Disponibi
   `;
   const banda = calcularBanda(data.frecuencia);
   const ahora = new Date();
-  const [hDesde] = data.hora_desde.split(":").map(Number);
-  const [hHasta] = data.hora_hasta.split(":").map(Number);
-  const fechaExpiracion = calcularFechaExpiracion(ahora, hDesde, hHasta);
+  const [hDesde, mDesde] = data.hora_desde.split(":").map(Number);
+  const [hHasta, mHasta] = data.hora_hasta.split(":").map(Number);
+  const fechaExpiracion = calcularFechaExpiracion(ahora, hDesde, mDesde, hHasta, mHasta);
   const fechaExpiracionStr = fechaExpiracion.toISOString();
   const params = [
     data.indicativo.toUpperCase(),
@@ -71,7 +71,13 @@ export async function create(data: CreateDisponibilidadInput): Promise<Disponibi
   return result;
 }
 
-function calcularFechaExpiracion(fechaCreacion: Date, horaDesde: number, horaHasta: number): Date {
+function calcularFechaExpiracion(
+  fechaCreacion: Date,
+  horaDesde: number,
+  minDesde: number,
+  horaHasta: number,
+  minHasta: number
+): Date {
   const ARG_OFFSET_MS = 3 * 60 * 60 * 1000;
 
   const localMs = fechaCreacion.getTime() - ARG_OFFSET_MS;
@@ -81,9 +87,9 @@ function calcularFechaExpiracion(fechaCreacion: Date, horaDesde: number, horaHas
   const m = localDate.getUTCMonth();
   const d = localDate.getUTCDate();
 
-  let expUtcMs = Date.UTC(y, m, d, horaHasta, 0, 0, 0) + ARG_OFFSET_MS;
+  let expUtcMs = Date.UTC(y, m, d, horaHasta, minHasta, 0, 0) + ARG_OFFSET_MS;
 
-  if (horaHasta < horaDesde) {
+  if (horaHasta < horaDesde || (horaHasta === horaDesde && minHasta < minDesde)) {
     expUtcMs += 86_400_000;
   }
 
