@@ -109,10 +109,10 @@ export function FormularioFull({ onClose, onSubmit }: FormularioFullProps) {
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      <div className="flex items-center gap-3 px-4 py-4 border-b border-border">
+      <div className="flex items-center gap-3 px-4 py-4 border-b border-border/60 backdrop-blur-md bg-background/80 sticky top-0 z-10">
         <button
           onClick={onClose}
-          className="p-2 -ml-2 text-text-muted hover:text-foreground"
+          className="p-2 -ml-2 text-text-muted hover:text-foreground transition-colors"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -122,7 +122,7 @@ export function FormularioFull({ onClose, onSubmit }: FormularioFullProps) {
       </div>
 
       <div className="p-4">
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="block text-sm font-medium mb-1">Indicativo *</label>
             <div className="flex gap-2">
@@ -219,13 +219,13 @@ export function FormularioFull({ onClose, onSubmit }: FormularioFullProps) {
           </div>
 
           {error && (
-            <div className="p-3 bg-red-50 text-red-600 text-sm rounded-xl">{error}</div>
+            <div className="p-4 bg-red-50 text-red-600 text-sm rounded-xl border border-red-200">{error}</div>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-4 bg-primary hover:bg-primary-hover text-white font-semibold rounded-xl text-lg transition-colors disabled:opacity-50"
+            className="w-full py-4 bg-gradient-to-r from-primary to-primary-hover text-white font-semibold rounded-xl text-lg transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100"
           >
             {loading ? "Publicando..." : "Publicar"}
           </button>

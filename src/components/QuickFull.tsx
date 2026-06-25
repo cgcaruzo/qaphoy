@@ -106,10 +106,10 @@ export function QuickFull({ onClose, onPublish }: QuickFullProps) {
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      <div className="flex items-center gap-3 px-4 py-4 border-b border-border">
+      <div className="flex items-center gap-3 px-4 py-4 border-b border-border/60 backdrop-blur-md bg-background/80 sticky top-0 z-10">
         <button
           onClick={step === "frecuencia" ? () => setStep("indicativo") : onClose}
-          className="p-2 -ml-2 text-text-muted hover:text-foreground"
+          className="p-2 -ml-2 text-text-muted hover:text-foreground transition-colors"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -120,7 +120,7 @@ export function QuickFull({ onClose, onPublish }: QuickFullProps) {
 
       <div className="p-4">
         {step === "indicativo" ? (
-          <div className="space-y-4">
+          <div className="space-y-4 animate-fade-in-up" key="indicativo">
             <p className="text-text-muted">Ingresá tu indicativo:</p>
             <div className="flex gap-2">
               <input
@@ -128,7 +128,7 @@ export function QuickFull({ onClose, onPublish }: QuickFullProps) {
                 value={indicativo}
                 onChange={(e) => setIndicativo(e.target.value.toUpperCase())}
                 placeholder="LU4ABC"
-                className="flex-1 min-w-0 px-4 py-4 border border-border rounded-xl bg-card text-2xl font-mono text-center uppercase"
+                className="flex-1 min-w-0 px-4 py-4 border border-border rounded-xl bg-card text-2xl font-mono text-center uppercase transition-shadow focus:shadow-[0_0_0_3px_rgba(26,86,219,0.15)]"
                 maxLength={10}
                 autoFocus
               />
@@ -137,20 +137,20 @@ export function QuickFull({ onClose, onPublish }: QuickFullProps) {
                 value={numeroOperador}
                 onChange={(e) => setNumeroOperador(e.target.value.replace(/\D/g, "").slice(0, 2))}
                 placeholder="Nº Op."
-                className="w-24 px-2 py-4 border border-border rounded-xl bg-card text-xl font-mono text-center"
+                className="w-24 px-2 py-4 border border-border rounded-xl bg-card text-xl font-mono text-center transition-shadow focus:shadow-[0_0_0_3px_rgba(26,86,219,0.15)]"
                 maxLength={2}
               />
             </div>
             {error && <p className="text-red-500 text-sm">{error}</p>}
             <button
               onClick={handleSiguiente}
-              className="w-full py-4 bg-primary hover:bg-primary-hover text-white font-semibold rounded-xl text-lg"
+              className="w-full py-4 bg-gradient-to-r from-primary to-primary-hover text-white font-semibold rounded-xl text-lg transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               Siguiente
             </button>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-4 animate-fade-in-up" key="frecuencia">
             <p className="text-text-muted">Ingresá la frecuencia:</p>
             <div className="flex gap-2 items-center overflow-visible">
               <input
@@ -158,7 +158,7 @@ export function QuickFull({ onClose, onPublish }: QuickFullProps) {
                 value={numeroFrecuencia}
                 onChange={(e) => setNumeroFrecuencia(e.target.value)}
                 placeholder="146.520"
-                className="flex-1 min-w-0 px-4 py-4 border border-border rounded-xl bg-card text-2xl font-mono text-center"
+                className="flex-1 min-w-0 px-4 py-4 border border-border rounded-xl bg-card text-2xl font-mono text-center transition-shadow focus:shadow-[0_0_0_3px_rgba(26,86,219,0.15)]"
                 autoFocus
               />
               <select
@@ -178,14 +178,14 @@ export function QuickFull({ onClose, onPublish }: QuickFullProps) {
             <div className="flex gap-3">
               <button
                 onClick={() => setStep("indicativo")}
-                className="flex-1 py-4 border border-border rounded-xl font-semibold"
+                className="flex-1 py-4 border border-border rounded-xl font-semibold transition-colors hover:bg-slate-50"
               >
                 Volver
               </button>
               <button
                 onClick={handlePublish}
                 disabled={loading || !numeroFrecuencia.trim()}
-                className="flex-1 py-4 bg-success text-white font-semibold rounded-xl disabled:opacity-50"
+                className="flex-1 py-4 bg-gradient-to-r from-success to-green-600 text-white font-semibold rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100"
               >
                 {loading ? "..." : "Publicar"}
               </button>

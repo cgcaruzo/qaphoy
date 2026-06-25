@@ -80,17 +80,17 @@ export function DisponibilidadesList() {
 
   return (
     <div className="min-h-screen pb-24">
-      <header className="bg-[#000] text-white px-4 py-4 flex flex-col items-center">
+      <header className="bg-gradient-to-b from-header via-[#0a0a0a] to-header text-white px-4 py-4 flex flex-col items-center shadow-[0_1px_0_rgba(255,255,255,0.05)]">
         <Image src="/logo_qaphoy.png" alt="QAPHoy" width={200} height={200} />
       </header>
 
       <main className="px-4 py-4 space-y-4">
         <button
           onClick={() => setPageState("quick")}
-          className="w-full py-4 bg-primary hover:bg-primary-hover text-white font-semibold rounded-2xl text-lg shadow-lg shadow-primary/25 flex items-center justify-center gap-3 transition-all active:scale-[0.98]"
+          className="w-full py-4 bg-gradient-to-r from-primary to-primary-hover text-white font-semibold rounded-2xl text-lg shadow-lg shadow-primary/30 flex items-center justify-center gap-3 transition-all hover:scale-[1.02] active:scale-[0.98]"
         >
           <svg
-            className="w-6 h-6"
+            className="w-6 h-6 animate-pulse-soft"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -110,13 +110,13 @@ export function DisponibilidadesList() {
         {loading ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-32 bg-slate-100 rounded-xl animate-pulse" />
+              <div key={i} className="h-32 rounded-xl animate-shimmer" />
             ))}
           </div>
         ) : disponibilidades.length === 0 ? (
-          <div className="text-center py-12 text-text-muted">
+          <div className="text-center py-16 text-text-muted animate-fade-in-up">
             <svg
-              className="w-16 h-16 mx-auto mb-4 text-slate-300"
+              className="w-20 h-20 mx-auto mb-4 text-slate-300"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -124,17 +124,19 @@ export function DisponibilidadesList() {
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={1.5}
+                strokeWidth={1}
                 d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
               />
             </svg>
-            <p>No hay estaciones activas</p>
+            <p className="text-lg font-medium">No hay estaciones activas</p>
             <p className="text-sm mt-1">¡Sé el primero en publicar!</p>
           </div>
         ) : (
           <div className="space-y-3">
-            {disponibilidades.map((d) => (
-              <DisponibilidadCard key={d.id} disponibilidad={d} />
+            {disponibilidades.map((d, i) => (
+              <div key={d.id} style={{ animationDelay: `${i * 50}ms` }} className="animate-fade-in-up">
+                <DisponibilidadCard disponibilidad={d} />
+              </div>
             ))}
           </div>
         )}
@@ -142,10 +144,12 @@ export function DisponibilidadesList() {
 
       <button
         onClick={() => setPageState("form")}
-        className="fixed bottom-6 right-6 w-14 h-14 bg-success text-white rounded-full shadow-lg shadow-success/30 flex items-center justify-center text-2xl font-bold transition-transform active:scale-95"
+        className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-br from-primary to-primary-hover text-white rounded-full shadow-lg shadow-primary/30 flex items-center justify-center text-2xl font-bold transition-all hover:scale-110 active:scale-95 animate-scale-in"
         aria-label="Publicar disponibilidad"
       >
-        +
+        <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+        </svg>
       </button>
     </div>
   );

@@ -29,36 +29,39 @@ export function DisponibilidadCard({ disponibilidad }: DisponibilidadCardProps) 
 
   return (
     <div
-      className={`bg-card rounded-xl border p-4 shadow-sm transition-all ${
+      className={`bg-card rounded-xl border p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md ${
         vigente
-          ? "border-success shadow-success/20 bg-success/5"
-          : "border-border"
+          ? "border-success/40 bg-success-soft shadow-success/10"
+          : "border-border hover:border-slate-300"
       }`}
     >
       {vigente && (
-        <div className="mb-2 flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
-          <span className="text-xs font-medium text-success">ACTIVO AHORA</span>
+        <div className="mb-3 flex items-center gap-1.5">
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full rounded-full bg-success opacity-75 animate-ping" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-success" />
+          </span>
+          <span className="text-xs font-semibold text-success tracking-wide">ACTIVO AHORA</span>
         </div>
       )}
 
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2">
-          <span className="font-mono text-xl font-bold text-foreground">
+          <span className="font-mono text-xl font-bold text-foreground tracking-tight">
             {indicativo}
             {numero_operador && (
-              <span className="ml-1 text-base font-normal text-text-muted">#{numero_operador}</span>
+              <span className="ml-1.5 text-base font-normal text-text-muted">#{numero_operador}</span>
             )}
           </span>
           <span
-            className={`px-2 py-0.5 text-xs font-medium rounded-full border ${
+            className={`px-2 py-0.5 text-[11px] font-semibold rounded-md border ${
               bandaColor[banda]
             }`}
           >
             {banda}
           </span>
         </div>
-        <span className="px-3 py-1 bg-primary/10 text-primary text-sm font-medium rounded-full">
+        <span className="px-3 py-1 bg-primary/10 text-primary text-sm font-semibold rounded-full">
           {estado}
         </span>
       </div>
@@ -78,7 +81,7 @@ export function DisponibilidadCard({ disponibilidad }: DisponibilidadCardProps) 
               d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"
             />
           </svg>
-          <span className="font-mono">{frecuencia}</span>
+          <span className="font-mono font-medium">{frecuencia}</span>
         </div>
 
         <div className="flex items-center gap-2">
@@ -95,14 +98,14 @@ export function DisponibilidadCard({ disponibilidad }: DisponibilidadCardProps) 
               d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <span>
+          <span className="font-mono">
             {formatHora(hora_desde)} - {formatHora(hora_hasta)}
           </span>
         </div>
 
         {observaciones && (
-          <div className="pt-2 border-t border-border">
-            <p className="text-text-muted italic">{observaciones}</p>
+          <div className="pt-2 border-t border-border/60">
+            <p className="text-text-muted italic text-[13px] leading-relaxed">{observaciones}</p>
           </div>
         )}
       </div>
