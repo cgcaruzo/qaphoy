@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import { DisponibilidadCard } from "@/components/DisponibilidadCard";
 import { FiltrosBanda } from "@/components/FiltrosBanda";
 import { FormularioFull } from "@/components/FormularioFull";
@@ -79,9 +80,8 @@ export function DisponibilidadesList() {
 
   return (
     <div className="min-h-screen pb-24">
-      <header className="bg-primary text-white px-4 py-6">
-        <h1 className="text-2xl font-bold font-mono">QAPHoy</h1>
-        <p className="text-white/80 text-sm">Radioaficionados en frecuencia</p>
+      <header className="bg-[#000] text-white px-4 py-4 flex flex-col items-center">
+        <Image src="/logo_qaphoy.png" alt="QAPHoy" width={200} height={200} />
       </header>
 
       <main className="px-4 py-4 space-y-4">
